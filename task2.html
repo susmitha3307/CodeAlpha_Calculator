@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculator</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .calculator {
+            width: 300px;
+            padding: 20px;
+            border-radius: 20px;
+            background: #1e1e2f;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        }
+
+        .title {
+            text-align: center;
+            color: white;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .display {
+            width: 100%;
+            height: 40px;
+            border: none;
+            outline: none;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            padding: 10px;
+            text-align: right;
+            font-size: 30px;
+            background: #f5f5f5;
+            color: #222;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        button {
+            height: 60px;
+            border: none;
+            border-radius: 12px;
+            font-size: 20px;
+            cursor: pointer;
+            background: #35354a;
+            color: white;
+            transition: 0.2s;
+        }
+
+        button:hover {
+            transform: scale(1.05);
+            background: #4a4a63;
+        }
+
+        .operator {
+            background: #667eea;
+        }
+
+        .operator:hover {
+            background: #5369d8;
+        }
+
+        .clear {
+            background: #e74c3c;
+        }
+
+        .clear:hover {
+            background: #c0392b;
+        }
+
+        .equal {
+            background: #27ae60;
+        }
+
+        .equal:hover {
+            background: #219150;
+        }
+
+        .zero {
+            grid-column: span 2;
+        }
+
+        @media (max-width: 400px) {
+            .calculator {
+                width: 90%;
+            }
+
+            button {
+                height: 55px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="calculator">
+
+        <h2 class="title">Calculator</h2>
+
+        <input type="text" id="display" class="display" value="0" readonly>
+
+        <div class="buttons">
+
+            <button class="clear" onclick="clearDisplay()">C</button>
+            <button onclick="deleteLast()">⌫</button>
+            <button onclick="appendValue('%')">%</button>
+            <button class="operator" onclick="appendValue('/')">÷</button>
+
+            <button onclick="appendValue('7')">7</button>
+            <button onclick="appendValue('8')">8</button>
+            <button onclick="appendValue('9')">9</button>
+            <button class="operator" onclick="appendValue('*')">×</button>
+
+            <button onclick="appendValue('4')">4</button>
+            <button onclick="appendValue('5')">5</button>
+            <button onclick="appendValue('6')">6</button>
+            <button class="operator" onclick="appendValue('-')">−</button>
+
+            <button onclick="appendValue('1')">1</button>
+            <button onclick="appendValue('2')">2</button>
+            <button onclick="appendValue('3')">3</button>
+            <button class="operator" onclick="appendValue('+')">+</button>
+
+            <button class="zero" onclick="appendValue('0')">0</button>
+            <button onclick="appendValue('.')">.</button>
+            <button class="equal" onclick="calculate()">=</button>
+
+        </div>
+    </div>
+
+    <script>
+        const display = document.getElementById("display");
+
+        function appendValue(value) {
+            if (display.value === "0" && !isNaN(value)) {
+                display.value = value;
+            } else {
+                display.value += value;
+            }
+        }
+
+        function clearDisplay() {
+            display.value = "0";
+        }
+
+        function deleteLast() {
+            if (display.value.length > 1) {
+                display.value = display.value.slice(0, -1);
+            } else {
+                display.value = "0";
+            }
+        }
+
+        function calculate() {
+            try {
+                let expression = display.value;
+
+                // Percentage calculation
+                expression = expression.replace(/(\d+(?:\.\d+)?)%/g, "($1/100)");
+
+                display.value = eval(expression);
+            } catch {
+                display.value = "Error";
+            }
+        }
+
+        // Keyboard support
+        document.addEventListener("keydown", function(event) {
+
+            const key = event.key;
+
+            if (
+                (key >= "0" && key <= "9") ||
+                key === "+" ||
+                key === "-" ||
+                key === "*" ||
+                key === "/" ||
+                key === "."
+            ) {
+                appendValue(key);
+            }
+
+            if (key === "Enter" || key === "=") {
+                calculate();
+            }
+
+            if (key === "Backspace") {
+                deleteLast();
+            }
+
+            if (key === "Escape") {
+                clearDisplay();
+            }
+        });
+    </script>
+
+</body>
+</html>
